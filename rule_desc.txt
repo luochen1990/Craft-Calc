@@ -1,0 +1,14 @@
+WoodenPlank * 4 = Wood
+Stick * 4 = WoodenPlank * 2
+Torch * 4 = Coal + Stick
+CraftingTable = WoodenPlank * 4
+Furnace = CobbleStone * 8
+Chest = WoodenPlank * 8
+Ladder * 3 = Stick * 7
+Fence * 3 = Stick * 2 + WoodenPlank * 4
+Boat = WoodenPlank * 5
+WoodenSlab * 6 = WoodenPlank * 3
+Sign * 3 = WoodenPlank * 6 + Stick
+WoodenDoor * 3 = WoodenPlank * 6
+IronDoor * 3 = IronIngot * 6
+
