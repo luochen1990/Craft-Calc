@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances, ScopedTypeVariables, UndecidableInstances, FlexibleContexts  #-}
 
+import Prelude hiding (getLine)
 import Control.Monad
 import Control.Arrow ((&&&))
 import Control.Applicative ((<$), empty, (<*), (*>), liftA2)
@@ -9,7 +10,11 @@ import Data.Monoid
 import Text.Parsec --hiding (many)
 import Text.Parsec.String (Parser)
 
-import System.IO
+import qualified Data.ByteString as S
+import qualified Data.Text.Encoding as T
+import Data.Text (unpack)
+
+import System.IO hiding (getLine)
 import Numeric
 import Data.Either (rights)
 import Data.Maybe (isJust, mapMaybe)
@@ -36,8 +41,8 @@ data Expr = Null
           | Add Expr Expr
           | Sub Expr Expr
           | Mod Expr Set
-          | Div Expr Set
-          | Del Expr Set
+          | Div Expr Set --TODO: not supported by evalNF yet
+          | Del Expr Set --TODO: not supported by evalNF yet
           deriving (Eq, Show)
 
 data Set = Set [Name] deriving (Eq, Show)
@@ -205,7 +210,7 @@ evalVia rules = let
     in eval
 
 test3 = do
-    rule_desc <- readTextFile "rule_desc.txt"
+    rule_desc <- readTextFile "rules.txt"
     --mapM_ putStrLn (lines rule_desc)
     --mapM_ print $ map (id &&& parseRule) $ lines rule_desc
     let rules = parseRules rule_desc
@@ -215,8 +220,11 @@ test3 = do
     putStrLn $ (getName $ getAliasRoot (Name "材料1"))
     putStrLn $ intercalate ", " $ map getName $ getFlatSet (Name "材料2")
 
+getLine :: IO String
+getLine = fmap unpack $ fmap T.decodeUtf8 S.getLine
+
 main = do
-    rule_desc <- readTextFile "rule_desc.txt"
+    rule_desc <- readTextFile "rules.txt"
     let rules = parseRules rule_desc
 
     let eval = evalVia rules
@@ -224,7 +232,11 @@ main = do
 
     let repl s = case parseEval s of Right r -> putStrLn ("= " ++ r ++ "\n"); Left e -> print e
 
-    --repl "材料1 % 基本材料"
-    --repl "材料1 % 中级材料"
-    forever $ getLine >>= repl
+    inputs <- fmap lines $ readTextFile "input.txt"
+    forM_ inputs $ \line -> do
+        putStrLn line
+        repl line
+
+    --repl "太阳能发电机 % 基础材料"
+    --forever $ getLine >>= repl --TODO: there is encoding problem here
 
