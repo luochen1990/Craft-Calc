@@ -1,0 +1,1 @@
+(Torch * 10) % basicMaterials

@@ -1,0 +1,2 @@
+(Torch * 10) % basicMaterials
+= Wood * 20 + Coal * 10

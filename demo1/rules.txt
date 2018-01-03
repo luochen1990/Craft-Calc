@@ -1,0 +1,3 @@
+WoodenPlank = Wood
+Stick = WoodenPlank * 2
+Torch = Coal + Stick
